@@ -4,8 +4,8 @@ import os, random, requests
 
 app = Flask(__name__)
 
-# Railway Variables se keys lega
-app.secret_key = os.environ.get("SECRET_KEY", "anime-secret-key-2024")
+# Railway Variables se keys lega, secret key session ke liye zaroori hai
+app.secret_key = os.environ.get("SECRET_KEY", "ss-ai-secret-2024")
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 # OTP Store (Memory mein rahega)
@@ -13,6 +13,9 @@ otp_store = {}
 
 def send_otp(phone, otp):
     api_key = os.environ.get("FAST2SMS_KEY")
+    if not api_key:
+        return {"return": False, "message": "API Key missing"}
+        
     url = "https://www.fast2sms.com/dev/bulkV2"
     payload = {
         "variables_values": str(otp),
@@ -21,31 +24,35 @@ def send_otp(phone, otp):
     }
     headers = {"authorization": api_key}
     try:
-        r = requests.post(url, json=payload, headers=headers)
+        r = requests.post(url, json=payload, headers=headers, timeout=10)
         return r.json()
-    except:
-        return {"return": False}
+    except Exception as e:
+        return {"return": False, "message": str(e)}
+
+# --- Routes ---
 
 @app.route("/")
 def index():
     if session.get("verified"):
-        return redirect(url_for("welcome"))
+        return redirect(url_for("chat_page"))
     return render_template("index.html")
 
 @app.route("/send-otp", methods=["POST"])
 def send_otp_route():
     data = request.get_json()
     phone = data.get("phone", "").strip()
+    
     if len(phone) != 10 or not phone.isdigit():
-        return jsonify({"success": False, "message": "Invalid number!"})
+        return jsonify({"success": False, "message": "10-digit number dalo!"})
     
     otp = random.randint(100000, 999999)
     otp_store[phone] = otp
-    result = send_otp(phone, otp)
     
+    result = send_otp(phone, otp)
     if result.get("return"):
-        return jsonify({"success": True, "message": "OTP sent!"})
-    return jsonify({"success": False, "message": "SMS failed. API Key check karein."})
+        return jsonify({"success": True, "message": "OTP bhej diya gaya!"})
+    
+    return jsonify({"success": False, "message": "SMS fail ho gaya. API Key check karein."})
 
 @app.route("/verify-otp", methods=["POST"])
 def verify_otp_route():
@@ -58,14 +65,15 @@ def verify_otp_route():
         session["phone"] = phone
         del otp_store[phone]
         return jsonify({"success": True})
-    return jsonify({"success": False, "message": "Wrong OTP!"})
+    
+    return jsonify({"success": False, "message": "Galat OTP!"})
 
-@app.route("/welcome")
-def welcome():
+@app.route("/chat-page")
+def chat_page():
     if not session.get("verified"):
         return redirect(url_for("index"))
-    # Agar aapne chat.html banaya hai toh wahan bhej sakte hain
-    return render_template("chat.html", phone=session.get("phone"))
+    # Aapka HTML file ka naam yahan 'index.html' ya 'chat.html' jo bhi hai wo likhein
+    return render_template("index.html", verified=True, phone=session.get("phone"))
 
 @app.route("/chat", methods=["POST"])
 def chat_route():
@@ -87,7 +95,8 @@ def logout():
     session.clear()
     return redirect(url_for("index"))
 
+# --- Railway/Production Port Logic (SABSE ZAROORI) ---
 if __name__ == "__main__":
-    # Railway ke liye ye line sabse zaroori hai
+    # Railway PORT variable deta hai, local pe 5000 use karega
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
