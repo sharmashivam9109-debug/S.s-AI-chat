@@ -1,189 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.s AI | Pro Chat</title>
-    
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #000000;
-            --input-bg: #1a1a1a;
-            --text-color: #ececec;
-            --border-color: #2f2f2f;
-            --accent-blue: #2196F3;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.s AI</title>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); height: 100vh; display: flex; flex-direction: column; }
+<style>
 
-        /* --- Header --- */
-        header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg-color); z-index: 10; }
-        .menu-icon { width: 30px; height: 30px; background: #222; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:#0b0b16;
+    color:white;
+}
 
-        /* --- Main Chat Window --- */
-        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .welcome-screen { text-align: center; max-width: 600px; width: 100%; }
-        .welcome-screen h1 { font-size: 24px; margin-bottom: 30px; font-weight: 500; }
+/* top bar */
 
-        /* Quick Action Buttons (Same as 6041.jpg) */
-        .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .action-card { 
-            background: transparent; border: 1px solid var(--border-color); 
-            padding: 12px; border-radius: 25px; display: flex; align-items: center; 
-            gap: 10px; cursor: pointer; transition: 0.2s; font-size: 14px; color: #b4b4b4;
-        }
-        .action-card:hover { background: #1a1a1a; border-color: #444; }
-        .action-card i { font-size: 18px; }
+.top{
+    display:flex;
+    justify-content:space-between;
+    padding:15px;
+    font-size:20px;
+}
 
-        /* --- ChatGPT Style Input Bar --- */
-        .bottom-container { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
-        .input-pill {
-            background: var(--input-bg);
-            border-radius: 40px;
-            padding: 8px 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid #333;
-        }
-        .add-icon { width: 35px; height: 35px; color: #fff; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        
-        textarea {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 16px;
-            resize: none;
-            outline: none;
-            padding: 10px 0;
-            max-height: 150px;
-        }
+/* main */
 
-        .voice-wave {
-            width: 35px;
-            height: 35px;
-            background: var(--accent-blue);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(33, 150, 243, 0.4);
-        }
+.container{
+    padding:25px;
+}
 
-        /* Message Bubbles for actual chat */
-        .msg-box { width: 100%; max-width: 700px; margin-bottom: 25px; display: flex; flex-direction: column; }
-        .user-msg { align-items: flex-end; }
-        .ai-msg { align-items: flex-start; }
-        .bubble { padding: 12px 18px; border-radius: 20px; max-width: 85%; line-height: 1.5; font-size: 15px; }
-        .user-bubble { background: #2f2f2f; color: #fff; border-bottom-right-radius: 5px; }
-        .ai-bubble { background: transparent; color: #ececec; border: none; padding-left: 0; }
+h1{
+    font-size:32px;
+    margin-top:10px;
+}
 
-        /* --- Hide elements when chatting starts --- */
-        .chatting .welcome-screen { display: none; }
-        .chatting #chat-container { justify-content: flex-start; }
+.sub{
+    color:#b084ff;
+    font-size:20px;
+}
 
-    </style>
+/* suggestion buttons */
+
+.card{
+    background:#14142a;
+    padding:18px;
+    border-radius:15px;
+    margin-top:15px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.card:hover{
+    background:#1d1d38;
+}
+
+/* chat input */
+
+.chatbox{
+    position:fixed;
+    bottom:20px;
+    left:20px;
+    right:20px;
+    display:flex;
+}
+
+input{
+    flex:1;
+    padding:18px;
+    border-radius:30px;
+    border:none;
+    background:#14142a;
+    color:white;
+}
+
+button{
+    margin-left:10px;
+    border:none;
+    border-radius:50%;
+    width:55px;
+    height:55px;
+    background:#8a5cff;
+    color:white;
+    font-size:20px;
+}
+
+/* sidebar */
+
+.sidebar{
+    position:fixed;
+    left:-260px;
+    top:0;
+    width:260px;
+    height:100%;
+    background:#0d0d1f;
+    padding:20px;
+    transition:0.3s;
+}
+
+.sidebar.active{
+    left:0;
+}
+
+.menu{
+    margin-top:30px;
+}
+
+.item{
+    padding:12px;
+    margin-top:10px;
+    background:#14142a;
+    border-radius:10px;
+}
+
+.theme{
+    margin-top:20px;
+}
+
+.login{
+    margin-top:40px;
+    background:linear-gradient(45deg,#7b4dff,#b388ff);
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+}
+
+</style>
 </head>
+
 <body>
 
-    <header>
-        <div class="menu-icon">☰</div>
-        <div style="font-weight: 600;">S.s AI</div>
-        <div class="menu-icon">👤</div>
-    </header>
+<div class="sidebar" id="side">
+<h2>✨ S.s AI</h2>
 
-    <div id="chat-container">
-        <div class="welcome-screen">
-            <h1>What can I help with?</h1>
-            
-            <div class="quick-actions">
-                <div class="action-card">🖼️ Create image</div>
-                <div class="action-card">👁️ Analyze images</div>
-                <div class="action-card">Code <code>{;}</code></div>
-                <div class="action-card">📊 Analyze data</div>
-            </div>
-        </div>
-        
-        <div id="chat-history" style="width: 100%; max-width: 700px;"></div>
-    </div>
+<div class="menu">
 
-    <div class="bottom-container">
-        <div class="input-pill">
-            <div class="add-icon" title="Upload">+</div>
-            <textarea id="user-input" rows="1" placeholder="Ask ChatGPT" oninput="autoResize(this)"></textarea>
-            <span style="cursor:pointer; font-size:20px;" onclick="startVoice()">🎙️</span>
-            <div class="voice-wave" onclick="sendMessage()">
-                <span style="color:white; font-size:18px;">➔</span>
-            </div>
-        </div>
-        <p style="text-align: center; font-size: 11px; color: #666; margin-top: 10px;">
-            S.s AI can make mistakes. Check important info.
-        </p>
-    </div>
+<div class="item">✏️ New Chat</div>
 
-    <script>
-        function autoResize(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
-        }
+<h3>⚙ Settings</h3>
 
-        async function sendMessage() {
-            const input = document.getElementById('user-input');
-            const text = input.value.trim();
-            if (!text) return;
+<div class="theme">
+Theme  
+<br><br>
+🌙 Dark | ☀ Light | 🔁 Auto
+</div>
 
-            // Switch to chat mode
-            document.body.classList.add('chatting');
-            const history = document.getElementById('chat-history');
+<div class="item">Font Size</div>
 
-            // User Bubble
-            history.innerHTML += `
-                <div class="msg-box user-msg">
-                    <div class="bubble user-bubble">${text}</div>
-                </div>`;
-            
-            input.value = '';
-            input.style.height = 'auto';
+<div class="item">Sound Effects</div>
 
-            try {
-                // Deployment successful - Fetching from your Railway backend
-                const response = await fetch('/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text })
-                });
-                const data = await response.json();
+<div class="item">Enter to Send</div>
 
-                // AI Response
-                history.innerHTML += `
-                    <div class="msg-box ai-msg">
-                        <div class="bubble ai-bubble">${marked.parse(data.reply)}</div>
-                    </div>`;
-                
-                document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
-            } catch (err) {
-                console.error("Fetch error:", err);
-            }
-        }
+<div class="item">Show Copy Button</div>
 
-        function startVoice() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) return alert("Browser not supported");
+<div class="login">
+Login / Sign up
+</div>
 
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'hi-IN';
-            recognition.onstart = () => { document.getElementById('user-input').placeholder = "Listening..."; };
-            recognition.onresult = (event) => {
-                document.getElementById('user-input').value = event.results[0][0].transcript;
-                sendMessage();
-            };
-            recognition.start();
-        }
-    </script>
+</div>
+</div>
+
+<div class="top">
+
+<div onclick="toggle()">☰</div>
+
+<div>S.s AI</div>
+
+<div>🦁</div>
+
+</div>
+
+
+<div class="container">
+
+<div class="sub">Hi Guest 👋</div>
+
+<h1>Where should we start?</h1>
+
+<div class="card">🐍 Python mein REST API kaise banate hain</div>
+
+<div class="card">🌐 Flask aur FastAPI mein kya fark hai</div>
+
+<div class="card">🧠 Machine Learning ke basics samjhao</div>
+
+<div class="card">🛠 Mera code debug karo</div>
+
+</div>
+
+<div class="chatbox">
+
+<input placeholder="Ask S.s AI...">
+
+<button>➤</button>
+
+</div>
+
+
+<script>
+
+function toggle(){
+document.getElementById("side").classList.toggle("active")
+}
+
+</script>
+
 </body>
 </html>
