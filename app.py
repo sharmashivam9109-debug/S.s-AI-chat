@@ -14,7 +14,7 @@ def index():
 def chat_route():
     user_msg = request.json.get("message")
     response = client.models.generate_content(
-        model="gemini-2.0-flash",
+        model="gemini-1.5-flash",
         contents=user_msg
     )
     return jsonify({"reply": response.text})
