@@ -36,8 +36,6 @@ body{background:#0a0a0f;color:#e2e8f0;font-family:'Segoe UI',sans-serif;height:1
 .header-badge span{color:#7c3aed;font-weight:500}
 #chat-wrap{flex:1;overflow-y:auto;display:flex;flex-direction:column}
 #chat-box{flex:1;padding:20px;display:flex;flex-direction:column;gap:20px;max-width:800px;width:100%;margin:0 auto}
-#chat-box::-webkit-scrollbar{width:4px}
-#chat-box::-webkit-scrollbar-thumb{background:#7c3aed;border-radius:4px}
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px;color:#475569}
 .empty-logo{font-size:52px;background:linear-gradient(135deg,#7c3aed,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .empty-state h2{font-size:22px;color:#94a3b8;font-weight:600}
@@ -58,8 +56,8 @@ body{background:#0a0a0f;color:#e2e8f0;font-family:'Segoe UI',sans-serif;height:1
 .ai .msg ul,.ai .msg ol{padding-left:20px;margin-bottom:8px}
 .ai .msg pre{position:relative;margin:10px 0;border-radius:8px;overflow:hidden}
 .ai .msg pre code{font-size:13px}
-.copy-btn{position:absolute;top:8px;right:8px;padding:4px 10px;background:rgba(255,255,255,0.1);border:none;border-radius:6px;color:#e2e8f0;font-size:11px;cursor:pointer}
-.copy-btn:hover{background:rgba(124,58,237,0.4)}
+.copy-code-btn{position:absolute;top:8px;right:8px;padding:4px 10px;background:rgba(255,255,255,0.1);border:none;border-radius:6px;color:#e2e8f0;font-size:11px;cursor:pointer}
+.copy-code-btn:hover{background:rgba(124,58,237,0.4)}
 .msg-actions{display:flex;gap:6px;margin-top:6px;opacity:0;transition:0.2s}
 .msg-wrap:hover .msg-actions{opacity:1}
 .action-btn{padding:4px 8px;background:rgba(255,255,255,0.05);border:none;border-radius:6px;color:#94a3b8;font-size:11px;cursor:pointer}
@@ -79,32 +77,31 @@ body{background:#0a0a0f;color:#e2e8f0;font-family:'Segoe UI',sans-serif;height:1
 .hint{text-align:center;font-size:11px;color:#334155;margin-top:8px}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#7c3aed;color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;opacity:0;transition:0.3s;pointer-events:none;z-index:999}
 .toast.show{opacity:1}
-@media(max-width:600px){#sidebar{position:absolute;z-index:100;height:100%}#sidebar.hidden{left:-260px;width:260px}}
 </style>
 </head>
 <body>
 <div id="sidebar">
   <div class="sidebar-header">
     <div class="brand">
-      <h2>✦ S.s AI</h2>
-      <p>Made with ♥ by Shivam</p>
+      <h2>&#10022; S.s AI</h2>
+      <p>Made with love by Shivam</p>
     </div>
     <button id="new-chat-btn">+ New Chat</button>
   </div>
   <div id="chat-history"></div>
   <div class="sidebar-footer">
-    <button id="clear-btn">🗑 Clear All</button>
-    <p>© 2026 <span>S.s AI</span> · By Shivam</p>
+    <button id="clear-btn">Clear All</button>
+    <p>&#169; 2026 <span>S.s AI</span> &middot; By Shivam</p>
   </div>
 </div>
 <div id="main">
   <div id="header">
-    <button id="toggle-sidebar">☰</button>
+    <button id="toggle-sidebar">&#9776;</button>
     <div class="header-center">
-      <div class="header-avatar">✦</div>
+      <div class="header-avatar">&#10022;</div>
       <div class="header-info">
         <h1>S.s AI</h1>
-        <p>● Online</p>
+        <p>&#9679; Online</p>
       </div>
     </div>
     <div class="header-badge">Made by <span>Shivam</span></div>
@@ -115,9 +112,9 @@ body{background:#0a0a0f;color:#e2e8f0;font-family:'Segoe UI',sans-serif;height:1
   <div id="input-area">
     <div class="input-box">
       <textarea id="msg-input" rows="1" placeholder="Message S.s AI..."></textarea>
-      <button id="send-btn">➤</button>
+      <button id="send-btn">&#10148;</button>
     </div>
-    <div class="hint">Enter to send · Shift+Enter for new line · S.s AI by Shivam</div>
+    <div class="hint">Enter to send &middot; Shift+Enter for new line &middot; S.s AI by Shivam</div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -128,42 +125,56 @@ const btn=document.getElementById('send-btn');
 const historyEl=document.getElementById('chat-history');
 let sessions=[],currentId=null;
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
-function showEmpty(){chatBox.innerHTML=`<div class="empty-state"><div class="empty-logo">✦</div><h2>S.s AI se kuch pucho</h2><p>Made by Shivam · Powered by Groq</p><div class="prompts"><div class="prompt-chip" onclick="usePrompt(this)">Quantum Physics explain karo</div><div class="prompt-chip" onclick="usePrompt(this)">Python mein loop likhdo</div><div class="prompt-chip" onclick="usePrompt(this)">Anime recommend karo</div><div class="prompt-chip" onclick="usePrompt(this)">Japan ke baare mein batao</div></div></div>`}
+function showEmpty(){chatBox.innerHTML='<div class="empty-state"><div class="empty-logo">&#10022;</div><h2>S.s AI se kuch pucho</h2><p>Made by Shivam &middot; Powered by Groq</p><div class="prompts"><div class="prompt-chip" onclick="usePrompt(this)">Quantum Physics explain karo</div><div class="prompt-chip" onclick="usePrompt(this)">Python mein loop likhdo</div><div class="prompt-chip" onclick="usePrompt(this)">Anime recommend karo</div><div class="prompt-chip" onclick="usePrompt(this)">Japan ke baare mein batao</div></div></div>'}
 function usePrompt(el){input.value=el.textContent;input.focus()}
 function renderHistory(){historyEl.innerHTML='';sessions.forEach(s=>{const d=document.createElement('div');d.className='history-item'+(s.id===currentId?' active':'');d.textContent=s.title;d.onclick=()=>loadSession(s.id);historyEl.appendChild(d)})}
 function newChat(){currentId=Date.now();sessions.unshift({id:currentId,title:'New Chat',messages:[]});renderHistory();showEmpty()}
 function loadSession(id){currentId=id;const s=sessions.find(x=>x.id===id);chatBox.innerHTML='';if(!s.messages.length){showEmpty();return}s.messages.forEach(m=>appendMsg(m.role,m.content,false));renderHistory()}
 function getSession(){return sessions.find(x=>x.id===currentId)}
 function appendMsg(role,content,save=true){
-  const wrap=document.createElement('div');wrap.className=`msg-wrap ${role}`;
-  const av=document.createElement('div');av.className='avatar';av.textContent=role==='user'?'S':'✦';
+  const wrap=document.createElement('div');wrap.className='msg-wrap '+role;
+  const av=document.createElement('div');av.className='avatar';av.textContent=role==='user'?'S':'*';
   const inner=document.createElement('div');
   const msgDiv=document.createElement('div');msgDiv.className='msg';
-  if(role==='ai'){msgDiv.innerHTML=marked.parse(content);msgDiv.querySelectorAll('pre code').forEach(b=>{hljs.highlightElement(b);const cb=document.createElement('button');cb.className='copy-btn';cb.textContent='Copy';cb.onclick=()=>{navigator.clipboard.writeText(b.textContent);showToast('Copied!')};b.parentElement.appendChild(cb)})}
-  else{msgDiv.textContent=content}
+  if(role==='ai'){
+    msgDiv.innerHTML=marked.parse(content);
+    msgDiv.querySelectorAll('pre code').forEach(b=>{
+      hljs.highlightElement(b);
+      const cb=document.createElement('button');
+      cb.className='copy-code-btn';
+      cb.textContent='Copy';
+      cb.onclick=()=>{navigator.clipboard.writeText(b.textContent);showToast('Copied!')};
+      b.parentElement.appendChild(cb)
+    })
+  } else {msgDiv.textContent=content}
   const actions=document.createElement('div');actions.className='msg-actions';
-  if(role==='ai'){actions.innerHTML='<button class="action-btn" onclick="regenerate()">↺ Regenerate</button>'}
-  actions.innerHTML+='<button class="action-btn" onclick="copyMsg(this)">📋 Copy</button>';
+  if(role==='ai'){
+    const rb=document.createElement('button');rb.className='action-btn';rb.textContent='Regenerate';
+    rb.onclick=regenerate;actions.appendChild(rb)
+  }
+  const cb=document.createElement('button');cb.className='action-btn';cb.textContent='Copy';
+  cb.onclick=()=>{navigator.clipboard.writeText(msgDiv.textContent);showToast('Copied!')};
+  actions.appendChild(cb);
   inner.appendChild(msgDiv);inner.appendChild(actions);
   wrap.appendChild(av);wrap.appendChild(inner);
   chatBox.appendChild(wrap);chatBox.scrollTop=chatBox.scrollHeight;
   if(save){const s=getSession();if(s){s.messages.push({role,content});if(s.messages.length===1)s.title=content.slice(0,30);renderHistory()}}
 }
-function copyMsg(btn){const msg=btn.closest('.msg-wrap').querySelector('.msg');navigator.clipboard.writeText(msg.textContent);showToast('Copied!')}
 let lastPrompt='';
-async function regenerate(){if(!lastPrompt)return;const s=getSession();if(s){s.messages.pop();chatBox.lastElementChild?.remove()}await sendMsg(lastPrompt,false)}
+async function regenerate(){if(!lastPrompt)return;const s=getSession();if(s){s.messages.pop();chatBox.lastElementChild&&chatBox.lastElementChild.remove()}await sendMsg(lastPrompt,false)}
 async function sendMsg(text,saveUser=true){
   if(!text.trim())return;lastPrompt=text;
-  chatBox.querySelector('.empty-state')?.remove();
+  const empty=chatBox.querySelector('.empty-state');if(empty)empty.remove();
   if(saveUser)appendMsg('user',text);
-  const tw=document.createElement('div');tw.className='msg-wrap ai';tw.id='typing';tw.innerHTML='<div class="avatar">✦</div><div class="typing"><span></span><span></span><span></span></div>';
+  const tw=document.createElement('div');tw.className='msg-wrap ai';tw.id='typing';
+  tw.innerHTML='<div class="avatar">*</div><div class="typing"><span></span><span></span><span></span></div>';
   chatBox.appendChild(tw);chatBox.scrollTop=chatBox.scrollHeight;
   try{
     const res=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})});
     const data=await res.json();
-    document.getElementById('typing')?.remove();
+    const t=document.getElementById('typing');if(t)t.remove();
     appendMsg('ai',data.reply);
-  }catch(e){document.getElementById('typing')?.remove();showToast('⚠️ API Error!')}
+  }catch(e){const t=document.getElementById('typing');if(t)t.remove();showToast('API Error!')}
 }
 btn.onclick=()=>{sendMsg(input.value);input.value='';input.style.height='auto'};
 input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();btn.click()}});
