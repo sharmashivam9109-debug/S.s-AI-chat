@@ -1,10 +1,9 @@
 from flask import Flask, render_template, request, jsonify
-from google import genai
+from groq import Groq
 import os
 
 app = Flask(__name__)
-
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 @app.route("/")
 def index():
@@ -13,11 +12,11 @@ def index():
 @app.route("/chat", methods=["POST"])
 def chat_route():
     user_msg = request.json.get("message")
-    response = client.models.generate_content(
-        model="gemini-2.0-flash-lite",
-        contents=user_msg
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[{"role": "user", "content": user_msg}]
     )
-    return jsonify({"reply": response.text})
+    return jsonify({"reply": response.choices[0].message.content})
 
 if __name__ == "__main__":
     app.run(debug=True)
