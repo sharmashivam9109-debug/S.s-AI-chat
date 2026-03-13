@@ -1,4 +1,3 @@
-cat > templates/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,67 +9,82 @@ cat > templates/index.html << 'HTMLEOF'
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0f;color:#e2e8f0;font-family:'Segoe UI',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+html,body{height:100%;overflow:hidden}
+body{background:#0a0a0f;color:#e2e8f0;font-family:'Segoe UI',sans-serif;display:flex;flex-direction:column}
 #overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99}
 #overlay.show{display:block}
-#drawer{position:fixed;left:-300px;top:0;width:280px;height:100%;background:#111118;z-index:100;display:flex;flex-direction:column;transition:left 0.3s;padding-top:16px}
+#drawer{position:fixed;left:-300px;top:0;width:280px;height:100%;background:#111118;z-index:100;display:flex;flex-direction:column;transition:left 0.3s ease}
 #drawer.open{left:0}
-.drawer-top{padding:0 16px 16px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.drawer-top{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.06)}
 .drawer-brand{font-size:20px;font-weight:700;background:linear-gradient(135deg,#7c3aed,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px;display:block}
-#drawer-new-chat{width:100%;padding:12px;background:none;border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#e2e8f0;font-size:14px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px}
-#drawer-new-chat:hover{background:rgba(255,255,255,0.05)}
-.drawer-section{padding:16px 16px 8px;font-size:11px;color:#475569;text-transform:uppercase;letter-spacing:1px}
-#drawer-history{flex:1;overflow-y:auto;padding:0 8px}
-.history-item{padding:10px 12px;border-radius:10px;cursor:pointer;font-size:14px;color:#94a3b8;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#drawer-new-chat{width:100%;padding:12px 16px;background:none;border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#e2e8f0;font-size:14px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;transition:background 0.2s}
+#drawer-new-chat:hover{background:rgba(255,255,255,0.06)}
+.drawer-section-label{padding:16px 16px 6px;font-size:11px;color:#475569;text-transform:uppercase;letter-spacing:1px}
+#drawer-history{flex:1;overflow-y:auto;padding:4px 8px}
+.history-item{padding:10px 12px;border-radius:10px;cursor:pointer;font-size:14px;color:#94a3b8;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:0.2s}
 .history-item:hover{background:rgba(255,255,255,0.06);color:#e2e8f0}
 .history-item.active{background:rgba(124,58,237,0.15);color:#a855f7}
-.drawer-footer{padding:16px;border-top:1px solid rgba(255,255,255,0.06)}
-#clear-btn{width:100%;padding:10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.15);border-radius:10px;color:#f87171;font-size:13px;cursor:pointer;margin-bottom:8px}
+.drawer-footer{padding:14px 16px;border-top:1px solid rgba(255,255,255,0.06)}
+#clear-btn{width:100%;padding:10px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;color:#f87171;font-size:13px;cursor:pointer;margin-bottom:10px;transition:0.2s}
+#clear-btn:hover{background:rgba(239,68,68,0.15)}
 .drawer-footer p{font-size:10px;color:#334155;text-align:center}
 .drawer-footer span{color:#7c3aed}
-#header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-#toggle-btn{background:none;border:none;color:#e2e8f0;font-size:22px;cursor:pointer;padding:4px;line-height:1}
-.header-title{font-size:17px;font-weight:600;color:#f1f5f9}
-.header-right{width:32px}
-#chat-wrap{flex:1;overflow-y:auto}
-#chat-box{padding:20px 16px;display:flex;flex-direction:column;gap:16px;max-width:760px;width:100%;margin:0 auto;min-height:100%}
-.empty-state{display:flex;flex-direction:column;gap:24px;padding-top:20px}
-.empty-greeting p{font-size:18px;color:#7c3aed;margin-bottom:4px}
-.empty-greeting h2{font-size:28px;font-weight:700;color:#f1f5f9;line-height:1.3}
-.suggestion-chips{display:flex;flex-direction:column;gap:10px}
-.chip{padding:14px 18px;background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:16px;font-size:15px;cursor:pointer;color:#e2e8f0;text-align:left;transition:0.2s}
-.chip:hover{background:rgba(124,58,237,0.15);border-color:#7c3aed}
+#header{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,0.04)}
+#toggle-btn{background:none;border:none;color:#e2e8f0;font-size:22px;cursor:pointer;padding:4px 6px;line-height:1;border-radius:6px;transition:background 0.2s}
+#toggle-btn:hover{background:rgba(255,255,255,0.06)}
+.header-title{font-size:16px;font-weight:600;color:#f1f5f9}
+.header-right{width:36px}
+#chat-wrap{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+#chat-box{padding:24px 16px 8px;display:flex;flex-direction:column;gap:18px;max-width:760px;width:100%;margin:0 auto}
+.empty-state{display:flex;flex-direction:column;gap:20px;padding-top:16px}
+.empty-greeting p{font-size:17px;color:#7c3aed;margin-bottom:6px;font-weight:500}
+.empty-greeting h2{font-size:26px;font-weight:700;color:#f1f5f9;line-height:1.3}
+.suggestion-chips{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.chip{padding:14px 18px;background:#13131f;border:1px solid rgba(255,255,255,0.07);border-radius:14px;font-size:14px;cursor:pointer;color:#cbd5e1;text-align:left;transition:0.2s;display:flex;align-items:center;gap:10px}
+.chip:hover{background:rgba(124,58,237,0.12);border-color:rgba(124,58,237,0.4);color:#e2e8f0}
+.chip-icon{font-size:18px;flex-shrink:0}
 .msg-wrap{display:flex;gap:10px;align-items:flex-start}
 .msg-wrap.user{flex-direction:row-reverse}
-.av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:2px}
 .user .av{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff}
-.ai .av{background:#1e1e2e;border:1px solid rgba(255,255,255,0.1);color:#a855f7}
-.msg{max-width:80%;padding:12px 16px;border-radius:18px;font-size:15px;line-height:1.7}
-.user .msg{background:#1e1e2e;color:#f1f5f9;border-bottom-right-radius:4px}
-.ai .msg{background:transparent;color:#e2e8f0;padding:4px 0;max-width:100%}
-.ai .msg h1,.ai .msg h2,.ai .msg h3{color:#a855f7;margin:10px 0 6px}
+.ai .av{background:#1a1a2e;border:1px solid rgba(124,58,237,0.3);color:#a855f7;font-size:13px}
+.msg-inner{flex:1;max-width:82%}
+.user .msg-inner{display:flex;flex-direction:column;align-items:flex-end}
+.msg{padding:11px 15px;border-radius:18px;font-size:14px;line-height:1.75;word-break:break-word}
+.user .msg{background:#1e1535;color:#f1f5f9;border-bottom-right-radius:4px;max-width:100%}
+.ai .msg{background:transparent;color:#e2e8f0;padding:2px 0;max-width:100%}
+.ai .msg h1,.ai .msg h2,.ai .msg h3{color:#a855f7;margin:12px 0 6px;font-size:1em}
+.ai .msg h1{font-size:1.15em}
 .ai .msg p{margin-bottom:8px}
+.ai .msg p:last-child{margin-bottom:0}
 .ai .msg ul,.ai .msg ol{padding-left:20px;margin-bottom:8px}
+.ai .msg li{margin-bottom:3px}
+.ai .msg strong{color:#f1f5f9}
+.ai .msg code{background:#1e1e2e;padding:2px 6px;border-radius:4px;font-size:13px;color:#a855f7}
 .ai .msg pre{position:relative;margin:10px 0;border-radius:10px;overflow:hidden}
-.ai .msg pre code{font-size:13px}
-.copy-code-btn{position:absolute;top:8px;right:8px;padding:4px 10px;background:rgba(255,255,255,0.1);border:none;border-radius:6px;color:#e2e8f0;font-size:11px;cursor:pointer}
-.msg-actions{display:flex;gap:6px;margin-top:4px;opacity:0;transition:0.2s}
+.ai .msg pre code{background:none;padding:0;color:inherit;font-size:13px}
+.copy-code-btn{position:absolute;top:8px;right:8px;padding:3px 10px;background:rgba(255,255,255,0.08);border:none;border-radius:6px;color:#cbd5e1;font-size:11px;cursor:pointer;transition:0.2s}
+.copy-code-btn:hover{background:rgba(124,58,237,0.3)}
+.msg-actions{display:flex;gap:4px;margin-top:5px;opacity:0;transition:opacity 0.2s}
 .msg-wrap:hover .msg-actions{opacity:1}
-.act-btn{padding:4px 8px;background:none;border:none;color:#475569;font-size:12px;cursor:pointer;border-radius:6px}
+.act-btn{padding:4px 8px;background:none;border:none;color:#475569;font-size:12px;cursor:pointer;border-radius:6px;transition:0.2s}
 .act-btn:hover{background:rgba(255,255,255,0.05);color:#94a3b8}
-.typing{display:flex;gap:4px;padding:8px 0}
+.typing-wrap{display:flex;gap:10px;align-items:center}
+.typing{display:flex;gap:5px;padding:12px 4px}
 .typing span{width:7px;height:7px;background:#7c3aed;border-radius:50%;animation:bounce 1.2s infinite}
 .typing span:nth-child(2){animation-delay:0.2s}
 .typing span:nth-child(3){animation-delay:0.4s}
-@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
-#input-wrap{flex-shrink:0;padding:12px 16px 24px;background:#0a0a0f;border-top:1px solid rgba(255,255,255,0.05)}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-8px)}}
+#input-wrap{flex-shrink:0;padding:12px 16px 22px;background:#0a0a0f;border-top:1px solid rgba(255,255,255,0.04)}
 .input-inner{max-width:760px;margin:0 auto}
-.input-box{display:flex;align-items:flex-end;gap:8px;background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:10px 14px}
+.input-box{display:flex;align-items:flex-end;gap:10px;background:#13131f;border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:10px 14px;transition:border-color 0.2s}
 .input-box:focus-within{border-color:rgba(124,58,237,0.5)}
-#msg-input{flex:1;background:none;border:none;color:#f1f5f9;font-size:15px;outline:none;resize:none;max-height:100px;line-height:1.5}
-#msg-input::placeholder{color:#475569}
-#send-btn{width:36px;height:36px;border-radius:50%;border:none;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#7c3aed;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;opacity:0;transition:0.3s;pointer-events:none;z-index:999}
+#msg-input{flex:1;background:none;border:none;color:#f1f5f9;font-size:15px;outline:none;resize:none;max-height:120px;line-height:1.5;padding:2px 0}
+#msg-input::placeholder{color:#3d3d5c}
+#send-btn{width:36px;height:36px;border-radius:50%;border:none;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:15px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:transform 0.15s,opacity 0.15s}
+#send-btn:hover{transform:scale(1.08)}
+#send-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+.toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%);background:#7c3aed;color:#fff;padding:8px 20px;border-radius:20px;font-size:13px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999;white-space:nowrap}
 .toast.show{opacity:1}
 </style>
 </head>
@@ -79,13 +93,13 @@ body{background:#0a0a0f;color:#e2e8f0;font-family:'Segoe UI',sans-serif;height:1
 <div id="drawer">
   <div class="drawer-top">
     <span class="drawer-brand">&#10022; S.s AI</span>
-    <button id="drawer-new-chat">&#9998; New chat</button>
+    <button id="drawer-new-chat">&#9998;&nbsp; New chat</button>
   </div>
-  <div class="drawer-section">Recent</div>
+  <div class="drawer-section-label">Recent</div>
   <div id="drawer-history"></div>
   <div class="drawer-footer">
     <button id="clear-btn">&#128465; Clear all chats</button>
-    <p>&#169; 2026 <span>S.s AI</span> &middot; Made by Shivam</p>
+    <p>&#169; 2026 <span>S.s AI</span> &nbsp;&middot;&nbsp; Made by Shivam</p>
   </div>
 </div>
 <div id="header">
@@ -108,69 +122,175 @@ body{background:#0a0a0f;color:#e2e8f0;font-family:'Segoe UI',sans-serif;height:1
 <script>
 const chatBox=document.getElementById('chat-box');
 const input=document.getElementById('msg-input');
-const btn=document.getElementById('send-btn');
+const sendBtn=document.getElementById('send-btn');
 const historyEl=document.getElementById('drawer-history');
 const drawer=document.getElementById('drawer');
 const overlay=document.getElementById('overlay');
-let sessions=[],currentId=null;
+let sessions=[],currentId=null,isLoading=false,lastPrompt='';
+
 function openDrawer(){drawer.classList.add('open');overlay.classList.add('show')}
 function closeDrawer(){drawer.classList.remove('open');overlay.classList.remove('show')}
 document.getElementById('toggle-btn').onclick=()=>drawer.classList.contains('open')?closeDrawer():openDrawer();
 overlay.onclick=closeDrawer;
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
-function showEmpty(){chatBox.innerHTML='<div class="empty-state"><div class="empty-greeting"><p>Hi Shivam</p><h2>Where should we start?</h2></div><div class="suggestion-chips"><div class="chip" onclick="usePrompt(this)">&#129302; Explain Quantum Physics</div><div class="chip" onclick="usePrompt(this)">&#128187; Python mein loop likhdo</div><div class="chip" onclick="usePrompt(this)">&#127981; Anime recommend karo</div><div class="chip" onclick="usePrompt(this)">&#127981; Japan ke baare mein batao</div></div></div>'}
-function usePrompt(el){input.value=el.innerText.slice(2).trim();closeDrawer();input.focus()}
-function renderHistory(){historyEl.innerHTML='';sessions.forEach(s=>{const d=document.createElement('div');d.className='history-item'+(s.id===currentId?' active':'');d.textContent=s.title;d.onclick=()=>{loadSession(s.id);closeDrawer()};historyEl.appendChild(d)})}
-function newChat(){currentId=Date.now();sessions.unshift({id:currentId,title:'New chat',messages:[]});renderHistory();showEmpty();closeDrawer()}
-function loadSession(id){currentId=id;const s=sessions.find(x=>x.id===id);chatBox.innerHTML='';if(!s.messages.length){showEmpty();return}s.messages.forEach(m=>appendMsg(m.role,m.content,false));renderHistory()}
+
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200)
+}
+
+function showEmpty(){
+  chatBox.innerHTML=`<div class="empty-state">
+    <div class="empty-greeting"><p>Hi Shivam</p><h2>Where should we start?</h2></div>
+    <div class="suggestion-chips">
+      <div class="chip" onclick="usePrompt(this)"><span class="chip-icon">&#129302;</span>Explain Quantum Physics simply</div>
+      <div class="chip" onclick="usePrompt(this)"><span class="chip-icon">&#128187;</span>Python mein loop likhdo</div>
+      <div class="chip" onclick="usePrompt(this)"><span class="chip-icon">&#127981;</span>Best anime recommend karo</div>
+      <div class="chip" onclick="usePrompt(this)"><span class="chip-icon">&#127981;</span>Japan ke baare mein batao</div>
+    </div>
+  </div>`
+}
+
+function usePrompt(el){
+  const txt=el.querySelector('span')?el.innerText.replace(el.querySelector('.chip-icon').innerText,'').trim():el.innerText;
+  input.value=txt;input.focus();closeDrawer()
+}
+
+function renderHistory(){
+  historyEl.innerHTML='';
+  sessions.forEach(s=>{
+    const d=document.createElement('div');
+    d.className='history-item'+(s.id===currentId?' active':'');
+    d.textContent=s.title;
+    d.onclick=()=>{loadSession(s.id);closeDrawer()};
+    historyEl.appendChild(d)
+  })
+}
+
+function newChat(){
+  currentId=Date.now();
+  sessions.unshift({id:currentId,title:'New chat',messages:[]});
+  renderHistory();showEmpty();closeDrawer()
+}
+
+function loadSession(id){
+  currentId=id;
+  const s=sessions.find(x=>x.id===id);
+  chatBox.innerHTML='';
+  if(!s||!s.messages.length){showEmpty();return}
+  s.messages.forEach(m=>appendMsg(m.role,m.content,false));
+  renderHistory()
+}
+
 function getSession(){return sessions.find(x=>x.id===currentId)}
+
 function appendMsg(role,content,save=true){
   const wrap=document.createElement('div');wrap.className='msg-wrap '+role;
-  const av=document.createElement('div');av.className='av';av.textContent=role==='user'?'S':'*';
-  const inner=document.createElement('div');inner.style.flex='1';
+  const av=document.createElement('div');av.className='av';
+  av.innerHTML=role==='user'?'S':'&#10022;';
+  const inner=document.createElement('div');inner.className='msg-inner';
   const msgDiv=document.createElement('div');msgDiv.className='msg';
+
   if(role==='ai'){
     msgDiv.innerHTML=marked.parse(content);
     msgDiv.querySelectorAll('pre code').forEach(b=>{
       hljs.highlightElement(b);
-      const cb=document.createElement('button');cb.className='copy-code-btn';cb.textContent='Copy';
-      cb.onclick=()=>{navigator.clipboard.writeText(b.textContent);showToast('Copied!')};
+      const cb=document.createElement('button');
+      cb.className='copy-code-btn';cb.textContent='Copy';
+      cb.onclick=()=>{navigator.clipboard.writeText(b.textContent);showToast('Code copied!')};
+      b.parentElement.style.position='relative';
       b.parentElement.appendChild(cb)
     })
-  }else{msgDiv.textContent=content}
+  }else{
+    msgDiv.textContent=content
+  }
+
   const actions=document.createElement('div');actions.className='msg-actions';
-  if(role==='ai'){const rb=document.createElement('button');rb.className='act-btn';rb.textContent='Regenerate';rb.onclick=regenerate;actions.appendChild(rb)}
-  const cb=document.createElement('button');cb.className='act-btn';cb.textContent='Copy';
+  if(role==='ai'){
+    const rb=document.createElement('button');rb.className='act-btn';
+    rb.innerHTML='&#8635; Regenerate';rb.onclick=regenerate;
+    actions.appendChild(rb)
+  }
+  const cb=document.createElement('button');cb.className='act-btn';
+  cb.innerHTML='&#128203; Copy';
   cb.onclick=()=>{navigator.clipboard.writeText(msgDiv.textContent);showToast('Copied!')};
   actions.appendChild(cb);
+
   inner.appendChild(msgDiv);inner.appendChild(actions);
   wrap.appendChild(av);wrap.appendChild(inner);
-  chatBox.appendChild(wrap);chatBox.scrollTop=chatBox.scrollHeight;
-  if(save){const s=getSession();if(s){s.messages.push({role,content});if(s.messages.length===1)s.title=content.slice(0,35);renderHistory()}}
+  chatBox.appendChild(wrap);
+  chatBox.scrollTop=chatBox.scrollHeight;
+
+  if(save){
+    const s=getSession();
+    if(s){
+      s.messages.push({role,content});
+      if(s.messages.length===1)s.title=content.slice(0,38);
+      renderHistory()
+    }
+  }
 }
-let lastPrompt='';
-async function regenerate(){if(!lastPrompt)return;const s=getSession();if(s){s.messages.pop();chatBox.lastElementChild&&chatBox.lastElementChild.remove()}await sendMsg(lastPrompt,false)}
+
+async function regenerate(){
+  if(!lastPrompt||isLoading)return;
+  const s=getSession();
+  if(s&&s.messages.length){
+    s.messages.pop();
+    const last=chatBox.lastElementChild;
+    if(last)last.remove()
+  }
+  await sendMsg(lastPrompt,false)
+}
+
 async function sendMsg(text,saveUser=true){
-  if(!text.trim())return;lastPrompt=text;
+  if(!text.trim()||isLoading)return;
+  isLoading=true;lastPrompt=text;
+  sendBtn.disabled=true;
+
   chatBox.querySelector('.empty-state')?.remove();
   if(saveUser)appendMsg('user',text);
-  const tw=document.createElement('div');tw.className='msg-wrap ai';tw.id='typing';
-  tw.innerHTML='<div class="av">*</div><div class="typing"><span></span><span></span><span></span></div>';
-  chatBox.appendChild(tw);chatBox.scrollTop=chatBox.scrollHeight;
+
+  const tw=document.createElement('div');tw.className='typing-wrap';tw.id='typing';
+  tw.innerHTML='<div class="av" style="background:#1a1a2e;border:1px solid rgba(124,58,237,0.3);color:#a855f7;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:2px">&#10022;</div><div class="typing"><span></span><span></span><span></span></div>';
+  chatBox.appendChild(tw);
+  chatBox.scrollTop=chatBox.scrollHeight;
+
   try{
-    const res=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})});
+    const res=await fetch('/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:text})
+    });
     const data=await res.json();
     document.getElementById('typing')?.remove();
-    appendMsg('ai',data.reply);
-  }catch(e){document.getElementById('typing')?.remove();showToast('API Error!')}
+    appendMsg('ai',data.reply)
+  }catch(e){
+    document.getElementById('typing')?.remove();
+    showToast('Connection error — try again')
+  }finally{
+    isLoading=false;sendBtn.disabled=false;input.focus()
+  }
 }
-btn.onclick=()=>{sendMsg(input.value);input.value='';input.style.height='auto'};
-input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();btn.click()}});
-input.addEventListener('input',()=>{input.style.height='auto';input.style.height=Math.min(input.scrollHeight,100)+'px'});
+
+sendBtn.onclick=()=>{
+  const txt=input.value.trim();
+  if(!txt)return;
+  input.value='';input.style.height='auto';
+  sendMsg(txt)
+};
+
+input.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click()}
+});
+
+input.addEventListener('input',()=>{
+  input.style.height='auto';
+  input.style.height=Math.min(input.scrollHeight,120)+'px'
+});
+
 document.getElementById('drawer-new-chat').onclick=newChat;
-document.getElementById('clear-btn').onclick=()=>{sessions=[];newChat()};
+document.getElementById('clear-btn').onclick=()=>{sessions=[];newChat();showToast('Chats cleared!')};
+
 newChat();
 </script>
 </body>
 </html>
-HTMLEOF
