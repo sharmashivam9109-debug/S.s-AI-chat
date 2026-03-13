@@ -3,207 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.s AI | Infinity Pro</title>
+    <title>S.s AI | Pro Chat</title>
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* --- 1. CORE VARIABLES & THEME --- */
         :root {
-            --bg-main: #09090b;
-            --bg-sidebar: #111114;
-            --bg-card: #18181b;
-            --accent-primary: #ffffff;
-            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-            --text-main: #fafafa;
-            --text-muted: #a1a1aa;
-            --border: #27272a;
-            --input-focus: #3f3f46;
-            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --bg-color: #000000;
+            --input-bg: #1a1a1a;
+            --text-color: #ececec;
+            --border-color: #2f2f2f;
+            --accent-blue: #2196F3;
         }
 
-        /* --- 2. GLOBAL RESET --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
-        body { 
-            background-color: var(--bg-main); 
-            color: var(--text-main); 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            height: 100vh; 
-            display: flex; 
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); height: 100vh; display: flex; flex-direction: column; }
 
-        /* --- 3. SIDEBAR STYLING (PRO LOOK) --- */
-        #sidebar {
-            width: 300px;
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-            position: relative;
-            transition: var(--transition-smooth);
-            z-index: 100;
-        }
+        /* --- Header --- */
+        header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg-color); z-index: 10; }
+        .menu-icon { width: 30px; height: 30px; background: #222; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        @media (max-width: 900px) {
-            #sidebar { position: fixed; left: -300px; height: 100%; }
-            #sidebar.active { left: 0; }
-        }
+        /* --- Main Chat Window --- */
+        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .welcome-screen { text-align: center; max-width: 600px; width: 100%; }
+        .welcome-screen h1 { font-size: 24px; margin-bottom: 30px; font-weight: 500; }
 
-        .brand {
+        /* Quick Action Buttons (Same as 6041.jpg) */
+        .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .action-card { 
+            background: transparent; border: 1px solid var(--border-color); 
+            padding: 12px; border-radius: 25px; display: flex; align-items: center; 
+            gap: 10px; cursor: pointer; transition: 0.2s; font-size: 14px; color: #b4b4b4;
+        }
+        .action-card:hover { background: #1a1a1a; border-color: #444; }
+        .action-card i { font-size: 18px; }
+
+        /* --- ChatGPT Style Input Bar --- */
+        .bottom-container { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
+        .input-pill {
+            background: var(--input-bg);
+            border-radius: 40px;
+            padding: 8px 15px;
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 40px;
-            font-family: 'Syne', sans-serif;
-            font-size: 24px;
-            font-weight: 800;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            border: 1px solid #333;
         }
-
-        .new-chat {
-            background: var(--accent-primary);
-            color: #000;
-            padding: 14px;
-            border-radius: 14px;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-            margin-bottom: 30px;
-            transition: var(--transition-smooth);
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .new-chat:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); opacity: 0.9; }
-
-        .history-container { flex: 1; overflow-y: auto; mask-image: linear-gradient(to bottom, black 90%, transparent); }
-        .history-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px; }
+        .add-icon { width: 35px; height: 35px; color: #fff; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
-        .history-item {
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.2s;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 4px;
-            color: var(--text-muted);
-        }
-
-        .history-item:hover { background: #27272a; color: var(--text-main); }
-        .history-item.active { background: #27272a; color: var(--text-main); border-left: 3px solid #fff; }
-
-        .sidebar-footer { border-top: 1px solid var(--border); padding-top: 20px; }
-        .nav-link { 
-            display: flex; align-items: center; gap: 12px; padding: 12px; 
-            border-radius: 12px; font-size: 14px; color: var(--text-muted); 
-            cursor: pointer; transition: 0.2s;
-        }
-        .nav-link:hover { background: #27272a; color: #fff; }
-
-        /* --- 4. MAIN CHAT AREA --- */
-        #main-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: radial-gradient(circle at top right, #18181b 0%, #09090b 100%);
-            position: relative;
-        }
-
-        header {
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .header-title { font-weight: 600; font-size: 18px; display: flex; align-items: center; gap: 8px; }
-        .status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e; }
-
-        #chat-window {
-            flex: 1;
-            overflow-y: auto;
-            padding: 40px 15%;
-            scroll-behavior: smooth;
-        }
-
-        /* Message Bubbles */
-        .message {
-            margin-bottom: 40px;
-            display: flex;
-            gap: 24px;
-            animation: slideUp 0.5s ease forwards;
-        }
-
-        .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-        }
-
-        .ai-avatar { background: var(--accent-gradient); border: 1px solid rgba(255,255,255,0.2); }
-        .user-avatar { background: #3f3f46; font-size: 12px; }
-
-        .content {
-            flex: 1;
-            font-size: 16px;
-            line-height: 1.7;
-            color: #d4d4d8;
-        }
-
-        .content h1, .content h2 { color: #fff; margin: 20px 0 10px; }
-        .content pre {
-            background: #000;
-            padding: 20px;
-            border-radius: 14px;
-            border: 1px solid var(--border);
-            margin: 15px 0;
-            position: relative;
-        }
-
-        /* --- 5. INPUT BAR (THE HEART OF UI) --- */
-        .input-wrapper {
-            padding: 20px 15% 40px;
-            background: linear-gradient(transparent, var(--bg-main) 30%);
-        }
-
-        .input-box {
-            background: rgba(24, 24, 27, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 10px 24px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: var(--transition-smooth);
-        }
-
-        .input-box:focus-within {
-            border-color: #71717a;
-            box-shadow: 0 0 0 4px rgba(255,255,255,0.03);
-            transform: translateY(-2px);
-        }
-
         textarea {
             flex: 1;
             background: transparent;
@@ -211,195 +58,132 @@
             color: #fff;
             font-size: 16px;
             resize: none;
-            padding: 12px 0;
-            max-height: 200px;
-            font-family: inherit;
+            outline: none;
+            padding: 10px 0;
+            max-height: 150px;
         }
 
-        .action-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
+        .voice-wave {
+            width: 35px;
+            height: 35px;
+            background: var(--accent-blue);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.2s;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(33, 150, 243, 0.4);
         }
 
-        .action-btn:hover { background: #27272a; color: #fff; }
-        .send-btn { background: #fff !important; color: #000 !important; }
+        /* Message Bubbles for actual chat */
+        .msg-box { width: 100%; max-width: 700px; margin-bottom: 25px; display: flex; flex-direction: column; }
+        .user-msg { align-items: flex-end; }
+        .ai-msg { align-items: flex-start; }
+        .bubble { padding: 12px 18px; border-radius: 20px; max-width: 85%; line-height: 1.5; font-size: 15px; }
+        .user-bubble { background: #2f2f2f; color: #fff; border-bottom-right-radius: 5px; }
+        .ai-bubble { background: transparent; color: #ececec; border: none; padding-left: 0; }
 
-        /* --- 6. LIMIT & NOTIFICATIONS --- */
-        #limit-toast {
-            position: fixed;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ef4444;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 14px;
-            display: none;
-            z-index: 1000;
-            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
-        }
-
-        /* Animations */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
+        /* --- Hide elements when chatting starts --- */
+        .chatting .welcome-screen { display: none; }
+        .chatting #chat-container { justify-content: flex-start; }
 
     </style>
 </head>
 <body>
 
-    <aside id="sidebar">
-        <div class="brand">
-            <div style="width: 30px; height: 30px; background: #fff; border-radius: 8px; transform: rotate(15deg);"></div>
-            S.s AI Pro
-        </div>
+    <header>
+        <div class="menu-icon">☰</div>
+        <div style="font-weight: 600;">S.s AI</div>
+        <div class="menu-icon">👤</div>
+    </header>
 
-        <div class="new-chat" onclick="window.location.reload()">
-            <span>+</span> New Conversation
-        </div>
-
-        <div class="history-container">
-            <div class="history-label">Recents</div>
-            <div class="history-item active">Welcome to S.s AI Pro</div>
-            <div class="history-item">How to build a Flask app?</div>
-            <div class="history-item">Deep learning vs Machine Learning</div>
-            <div class="history-item">UI Design Trends 2026</div>
-        </div>
-
-        <div class="sidebar-footer">
-            <div class="nav-link" onclick="toggleTheme()">🌓 Light / Dark Mode</div>
-            <div class="nav-link" onclick="location.href='/logout'">👤 Account Settings</div>
-            <div class="nav-link" onclick="location.href='/logout'">🚪 Logout Session</div>
-        </div>
-    </aside>
-
-    <main id="main-container">
-        <header>
-            <div class="header-title">
-                <div class="status-dot"></div> S.s AI v3.0 Ultra
-            </div>
-            <div style="display: flex; gap: 15px;">
-                <button class="action-btn">🕶️</button>
-                <button class="action-btn" onclick="toggleSidebar()">☰</button>
-            </div>
-        </header>
-
-        <div id="chat-window">
-            <div class="message">
-                <div class="avatar ai-avatar">S</div>
-                <div class="content">
-                    <h1>Aadab, Main S.s AI Pro hoon.</h1>
-                    <p>Aaj hum kya naya create karenge? Main aapki coding, research aur creative writing mein madad kar sakta hoon.</p>
-                </div>
+    <div id="chat-container">
+        <div class="welcome-screen">
+            <h1>What can I help with?</h1>
+            
+            <div class="quick-actions">
+                <div class="action-card">🖼️ Create image</div>
+                <div class="action-card">👁️ Analyze images</div>
+                <div class="action-card">Code <code>{;}</code></div>
+                <div class="action-card">📊 Analyze data</div>
             </div>
         </div>
+        
+        <div id="chat-history" style="width: 100%; max-width: 700px;"></div>
+    </div>
 
-        <div id="limit-toast">⚠️ Message Limit Reached! Please login.</div>
-
-        <div class="input-wrapper">
-            <div class="input-box">
-                <button class="action-btn" onclick="startVoice()">🎙️</button>
-                <textarea id="user-input" placeholder="Yahan pucho kuch bhi..." rows="1"></textarea>
-                <button class="action-btn send-btn" onclick="sendMessage()">➤</button>
+    <div class="bottom-container">
+        <div class="input-pill">
+            <div class="add-icon" title="Upload">+</div>
+            <textarea id="user-input" rows="1" placeholder="Ask ChatGPT" oninput="autoResize(this)"></textarea>
+            <span style="cursor:pointer; font-size:20px;" onclick="startVoice()">🎙️</span>
+            <div class="voice-wave" onclick="sendMessage()">
+                <span style="color:white; font-size:18px;">➔</span>
             </div>
-            <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 15px;">
-                Strict Secure Mode Active. Developed by Sonu.
-            </p>
         </div>
-    </main>
+        <p style="text-align: center; font-size: 11px; color: #666; margin-top: 10px;">
+            S.s AI can make mistakes. Check important info.
+        </p>
+    </div>
 
     <script>
-        let msgCount = 0;
-        const isVerified = {{ 'true' if verified else 'false' }};
-
-        // Auto-resize textarea
-        const tx = document.getElementsByTagName("textarea");
-        for (let i = 0; i < tx.length; i++) {
-            tx[i].addEventListener("input", OnInput, false);
-        }
-        function OnInput() {
-            this.style.height = 0;
-            this.style.height = (this.scrollHeight) + "px";
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
         }
 
         async function sendMessage() {
             const input = document.getElementById('user-input');
             const text = input.value.trim();
-            if(!text) return;
+            if (!text) return;
 
-            // Guest Check
-            if(!isVerified && msgCount >= 5) {
-                const toast = document.getElementById('limit-toast');
-                toast.style.display = 'block';
-                return;
-            }
+            // Switch to chat mode
+            document.body.classList.add('chatting');
+            const history = document.getElementById('chat-history');
 
-            // Append User Message
-            const window = document.getElementById('chat-window');
-            window.innerHTML += `
-                <div class="message">
-                    <div class="avatar user-avatar">ME</div>
-                    <div class="content">${text}</div>
+            // User Bubble
+            history.innerHTML += `
+                <div class="msg-box user-msg">
+                    <div class="bubble user-bubble">${text}</div>
                 </div>`;
             
             input.value = '';
             input.style.height = 'auto';
-            window.scrollTop = window.scrollHeight;
 
-            // Fetch logic with skeleton loading
             try {
+                // Deployment successful - Fetching from your Railway backend
                 const response = await fetch('/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: text })
                 });
                 const data = await response.json();
-                
-                window.innerHTML += `
-                    <div class="message">
-                        <div class="avatar ai-avatar">S</div>
-                        <div class="content">${marked.parse(data.reply)}</div>
+
+                // AI Response
+                history.innerHTML += `
+                    <div class="msg-box ai-msg">
+                        <div class="bubble ai-bubble">${marked.parse(data.reply)}</div>
                     </div>`;
                 
-                hljs.highlightAll();
-                if(!isVerified) msgCount++;
-                window.scrollTop = window.scrollHeight;
-
-            } catch (err) { console.error(err); }
+                document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
+            } catch (err) {
+                console.error("Fetch error:", err);
+            }
         }
 
         function startVoice() {
-            const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            rec.lang = 'hi-IN';
-            rec.onstart = () => { document.getElementById('user-input').placeholder = "Sun raha hoon..."; };
-            rec.onresult = (e) => {
-                document.getElementById('user-input').value = e.results[0][0].transcript;
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return alert("Browser not supported");
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'hi-IN';
+            recognition.onstart = () => { document.getElementById('user-input').placeholder = "Listening..."; };
+            recognition.onresult = (event) => {
+                document.getElementById('user-input').value = event.results[0][0].transcript;
                 sendMessage();
             };
-            rec.start();
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
+            recognition.start();
         }
     </script>
 </body>
-    </html>
-    
+</html>
