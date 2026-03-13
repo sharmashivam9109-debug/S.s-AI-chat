@@ -3,7 +3,9 @@ from groq import Groq
 import os, random, requests
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "ss-ai-secret-key")
+
+# Railway Variables handling
+app.secret_key = os.environ.get("SECRET_KEY", "ss-ai-2026-key")
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 otp_store = {}
@@ -12,7 +14,7 @@ def send_otp(phone, otp):
     api_key = os.environ.get("FAST2SMS_KEY")
     url = "https://www.fast2sms.com/dev/bulkV2"
     
-    # Fast2SMS OTP route ke liye exact ye format chahiye
+    # Fast2SMS ka exact format
     querystring = {
         "variables_values": str(otp),
         "route": "otp",
@@ -25,9 +27,8 @@ def send_otp(phone, otp):
     }
     
     try:
-        # GET request zyada reliably kaam karta hai Fast2SMS OTP ke liye
+        # GET request Fast2SMS ke liye best hai
         r = requests.get(url, headers=headers, params=querystring, timeout=10)
-        print(f"Fast2SMS Response: {r.text}") # Ye logs mein dikhega agar error aaye
         return r.json()
     except Exception as e:
         print(f"SMS Error: {e}")
@@ -54,9 +55,7 @@ def send_otp_route():
     if result.get("return") == True:
         return jsonify({"success": True, "message": "OTP bhej diya gaya!"})
     
-    # Agar fail hua toh Fast2SMS ka error message dikhayega
-    error_msg = result.get("message", "SMS fail ho gaya")
-    return jsonify({"success": False, "message": f"Error: {error_msg}"})
+    return jsonify({"success": False, "message": "SMS fail ho gaya. Balance check karein!"})
 
 @app.route("/verify-otp", methods=["POST"])
 def verify_otp_route():
@@ -74,6 +73,7 @@ def verify_otp_route():
 def chat_page():
     if not session.get("verified"):
         return redirect(url_for("index"))
+    # Maan ke chal raha hoon aapka chat index.html mein hi verified flag se chalta hai
     return render_template("index.html", verified=True)
 
 @app.route("/chat", methods=["POST"])
@@ -88,5 +88,6 @@ def chat_route():
     return jsonify({"reply": response.choices[0].message.content})
 
 if __name__ == "__main__":
+    # Railway ke liye fixed port binding
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
